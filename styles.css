@@ -1,0 +1,157 @@
+:root {
+    /* Manteniendo tu paleta de colores formales */
+    --guinda: #000000;
+    --guinda-dark: #333333;
+    --blanco: #ffffff;
+    --gris-claro: #f4f4f4;
+}
+
+body {
+    background-color: var(--gris-claro);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+
+/* =========================================
+   1. CABECERA (TOPBAR) Y LOGO
+   ========================================= */
+.topbar {
+    background-color: var(--guinda);
+    color: var(--blanco);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    height: 70px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-logo {
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.tracking-wide {
+    letter-spacing: 2px;
+}
+
+.btn-user {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--blanco);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    transition: 0.3s;
+}
+
+.btn-user:hover {
+    background-color: var(--blanco);
+    color: var(--guinda);
+}
+
+.dropdown-menu {
+    border-top: 4px solid var(--guinda);
+    border-radius: 8px;
+    margin-top: 10px !important;
+}
+
+/* =========================================
+   2. TARJETAS Y CONTENEDORES FORMALES
+   ========================================= */
+.card-section {
+    background: white;
+    padding: 30px;
+}
+
+.formal-style {
+    border: 1px solid #ddd !important;
+    border-top: 5px solid var(--guinda) !important;
+    border-radius: 8px !important; 
+}
+
+.section-title-formal {
+    color: var(--guinda);
+    font-weight: 800;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+}
+
+/* =========================================
+   3. FORMULARIOS (AGENDA)
+   ========================================= */
+.form-label-formal {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: #444;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.custom-select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    color: #000;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.custom-select:focus {
+    outline: none;
+    border-color: var(--guinda);
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   4. BOTONES
+   ========================================= */
+.btn-start {
+    background-color: var(--guinda);
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    transition: background-color 0.3s;
+    letter-spacing: 1px;
+}
+
+.btn-start:hover {
+    background-color: var(--guinda-dark);
+    color: white;
+}
+
+/* =========================================
+   5. TABLA DE VISITAS
+   ========================================= */
+.table th {
+    background-color: var(--guinda) !important;
+    color: white !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.table td {
+    vertical-align: middle;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+/* Para que la etiquetita de "PENDIENTE" resalte bien */
+.badge {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}

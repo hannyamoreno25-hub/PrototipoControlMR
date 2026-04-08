@@ -1,0 +1,148 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Fondo por defecto en caso de que no haya uno subido */
+    background: url('fondo2.png') no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Evita que el fondo se mueva al hacer scroll */
+    transition: background-image 0.5s ease-in-out; /* Efecto suave al cambiar fondo */
+}
+
+.wrapper {
+    width: 420px;
+    background: rgba(172, 234, 251, 0.1); 
+    border: 2px solid rgba(255, 255, 255, .2);
+    backdrop-filter: blur(15px); 
+    box-shadow: 0 0 15px rgba(246, 244, 244, 0.5);
+    color: #8d8888;
+    border-radius: 12px;
+    padding: 30px 40px;
+}
+
+.wrapper h1 {
+    font-size: 36px;
+    text-align: center;
+    color: #fbf5f5;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 2px solid #767272;
+    outline: none;
+    border-radius: 40px;
+    font-size: 16px;
+    color: #f9f5f5;
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder {
+    color: #454141;
+}
+
+.input-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+.btn {
+    width: 100%;
+    height: 45px;
+    background: #141413; 
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #f6f5f5; 
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn:hover {
+    background: #000; 
+    color: #0f0d0d;
+    border: 1px solid #070707;
+}
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14.5px;
+    margin: -15px 0 15px;
+}
+
+.remember-forgot label input {
+    accent-color: #f1eaea;
+    margin-right: 3px;
+}
+
+.remember-forgot a {
+    color: #f1eded;
+    text-decoration: none;
+}
+
+.remember-forgot a:hover {
+    text-decoration: underline;
+}
+
+.register-link {
+    font-size: 14.5px;
+    text-align: center;
+    margin: 20px 0 15px;
+}
+
+.register-link p a {
+    color: #f9f6f6;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* -------------------------------------
+   ESTILOS DEL BOTÓN PARA SUBIR FONDO
+-------------------------------------- */
+.upload-bg-container {
+    margin-top: 20px;
+}
+
+.upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.upload-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
