@@ -7,9 +7,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="admin2.css">
+
     <script>
+        // Revisamos si existe el token en esta pestaña
         const tienePermiso = sessionStorage.getItem("tokenSeguridadSMR");
-        if (!tienePermiso) { window.location.replace("index.html"); }
+
+        // Si NO tiene el token (porque copió el link en otra ventana)
+        if (!tienePermiso) {
+            window.location.replace("index.html"); // Cambia por el nombre de tu página de login si es distinto
+        }
     </script>
 </head>
 <body class="bg-light pb-5 mb-5">
@@ -19,13 +25,16 @@
         <img src="./WhatsApp Image 2026-02-05 at 4.45.12 PM (1).jpeg" alt="Logo MR" class="logo-mr">
         <span class="text-white fw-bold fs-5 titulo-header">CONTROL TÉCNICO</span>
     </div>
+    
     <div class="dropdown">
-        <button class="btn btn-usuario rounded-pill d-flex align-items-center gap-2 px-3 py-1" type="button" data-bs-toggle="dropdown">
+        <button class="btn btn-usuario rounded-pill d-flex align-items-center gap-2 px-3 py-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-person-circle fs-5"></i>
             <span class="fw-semibold d-none d-sm-inline" id="userNameDisplay">Usuario</span>
             <i class="bi bi-caret-down-fill" style="font-size: 0.8rem;"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow border-secondary">
+            <li><a class="dropdown-item" href="#">Configuración</a></li>
+            <li><hr class="dropdown-divider border-secondary"></li>
             <li><a class="dropdown-item text-danger fw-bold" href="#" onclick="cerrarSesion()">Salir</a></li>
         </ul>
     </div>
@@ -36,10 +45,11 @@
     <section id="vista-asignacion" class="vista-app" style="display: block;">
         <div class="card shadow-sm border-dark mb-4 mt-2">
             <div class="card-body">
-                <h5 class="card-title fw-bold mb-3 border-bottom pb-2 text-uppercase">Asignación Técnica</h5>
+                <h5 class="card-title fw-bold mb-3 border-bottom pb-2">ASIGNACIÓN TÉCNICA</h5>
+                
                 <div class="mb-3">
-                    <select id="asigZona" class="form-select border-dark" onchange="seleccionarTodasPorZona()">
-                        <option value="" disabled selected>SELECCIONA LA ZONA</option>
+                    <select id="asigZona" class="form-select border-dark" onchange="filtrarSucursalesPorZona()">
+                        <option value="" disabled selected>ZONA</option>
                         <option value="Zona C">Zona C</option>
                         <option value="Zona D">Zona D</option>
                         <option value="Zona E">Zona E</option>
@@ -47,17 +57,23 @@
                         <option value="Zona F">Zona F</option>
                     </select>
                 </div>
+                
                 <div class="mb-3">
-                    <input type="text" id="asigTecnico" class="form-control border-dark" placeholder="NOMBRE DEL TÉCNICO">
+                    <input type="text" id="asigTecnico" class="form-control border-dark" placeholder="TÉCNICO (Nombre)">
                 </div>
+
                 <div class="mb-3">
                     <select id="asigUnidades" class="form-select border-dark mb-3" onchange="agregarSucursalLista()">
-                        <option value="" disabled selected>AGREGAR OTRA SUCURSAL...</option>
+                        <option value="" disabled selected>SUCURSALES (Selecciona para agregar)</option>
                     </select>
+                    
                     <div class="border border-dark rounded p-2 bg-white" style="min-height: 100px;" id="contenedor-sucursales">
-                        <ul class="list-group list-group-flush" id="lista-sucursales-agregadas"></ul>
+                        <p class="text-muted small text-center m-0 mt-3" id="placeholder-sucursales">Las sucursales asignadas aparecerán aquí</p>
+                        <ul class="list-group list-group-flush" id="lista-sucursales-agregadas">
+                        </ul>
                     </div>
                 </div>
+
                 <button class="btn btn-dark w-100 fw-bold py-2 mt-2 shadow" onclick="ejecutarAsignacion(event)">GUARDAR ASIGNACIÓN</button>
             </div>
         </div>
@@ -68,86 +84,95 @@
             <div class="card-body"> 
                 <h5 class="card-title fw-bold mb-3 border-bottom pb-2">NUEVO USUARIO</h5>               
                 <div class="mb-3">
-                    <input type="text" id="adminUser" class="form-control border-dark" placeholder="Nombre de Usuario">
+                    <input type="text" id="adminUser" class="form-control border-dark" placeholder="Usuario ID">
                 </div>
                 <div class="mb-3">
-                    <input type="password" id="adminPass" class="form-control border-dark" placeholder="NIP / Contraseña">
+                    <input type="password" id="adminPass" class="form-control border-dark" placeholder="Contraseña">
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="adminNombreCompleto" class="form-control border-dark" placeholder="Nombre Real">
                 </div>
                 <div class="mb-3">
                     <select id="adminRol" class="form-select border-dark">
                         <option value="TECNICO">TECNICO</option>
                         <option value="AUXILIAR">AUXILIAR</option>
+                        <option value="ADMINISTRADOR">ADMINISTRADOR</option>
                     </select>
                 </div>
+                <div class="mb-3">
+                    <input type="text" id="adminFotoURL" class="form-control border-dark" placeholder="URL Foto (Opcional)">
+                </div>
+
                 <button class="btn btn-dark w-100 fw-bold py-2 mt-2 shadow" id="btnAlta" onclick="ejecutarAltaUsuario()">GUARDAR USUARIO</button>
+            </div>
+        </div>
+
+        <div class="accordion border-dark" id="accordionUsuarios">
+            <div class="accordion-item border-dark border-2">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed fw-bold bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsers">
+                  <i class="bi bi-people-fill me-2"></i> VER USUARIOS ACTIVOS
+                </button>
+              </h2>
+              <div id="collapseUsers" class="accordion-collapse collapse" data-bs-parent="#accordionUsuarios">
+                <div class="accordion-body p-0">
+                  <div class="table-responsive">
+                      <table class="table table-sm align-middle text-center table-striped m-0">
+                          <thead class="table-dark">
+                              <tr>
+                                  <th>ID</th>
+                                  <th>Nombre</th>
+                                  <th>Rol</th>
+                              </tr>
+                          </thead>
+                          <tbody id="listaUsuariosPersiana"></tbody>
+                      </table>
+                  </div>
+                </div>
+              </div>
             </div>
         </div>
     </section>
 
     <section id="vista-monitoreo" class="vista-app" style="display: none;">
-        <div class="d-flex gap-2 mb-3 mt-2">
-            <button id="btnAsistencia" class="btn btn-dark w-100 fw-bold" onclick="mostrarSubVistaMonitoreo('asistencia')">ASISTENCIA</button>
-            <button id="btnVisitas" class="btn btn-outline-dark w-100 fw-bold" onclick="mostrarSubVistaMonitoreo('visitas')">VISITAS</button>
-        </div>
-
-        <div id="subvista-asistencia">
-            <div class="table-responsive border border-dark rounded bg-white shadow-sm">
-                <table class="table table-striped align-middle text-center m-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>NOMBRE</th>
-                            <th>FALTAS</th>
-                            <th>RETARDOS</th> <th>ASIST.</th>
-                            <th>DETALLE</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-asistencia-body"></tbody>
-                </table>
+        <div class="card shadow-sm border-dark mt-2">
+            <div class="card-body text-center">
+                <h5 class="fw-bold mb-3">Dashboards de 15 días</h5>
+                <i class="bi bi-graph-up-arrow display-1 text-muted"></i>
+                <p class="text-muted mt-3">Aquí podrás colocar los resúmenes de entradas y visitas.</p>
             </div>
         </div>
 
-        <div id="subvista-visitas" style="display:none;">
-            <div class="mb-3">
-                <select id="filtroZonaVisitas" class="form-select border-dark" onchange="cargarVisitasPorZona()">
-                    <option value="" disabled selected>SELECCIONA LA ZONA PARA VER VISITAS</option>
-                    <option value="Zona C">Zona C</option>
-                    <option value="Zona D">Zona D</option>
-                    <option value="Zona E">Zona E</option>
-                    <option value="Carpinterias">Carpinterías</option>
-                    <option value="Zona F">Zona F</option>
-                </select>
-            </div>
-            <div id="contenedor-cards-visitas"></div>
+        <div class="table-responsive mt-4 border-dark border rounded bg-white">
+            <table class="table table-striped text-center m-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ZONA</th>
+                        <th>TECNICO</th>
+                        <th>UBICACIÓN</th>
+                    </tr>
+                </thead>
+                <tbody id="listaAsignacionesSheet"></tbody>
+            </table>
         </div>
     </section>
-</main>
 
-<div class="modal fade" id="modalAsistencia" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content border-dark border-2">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title fw-bold" id="modalTituloNombre">Reporte Detallado</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body bg-light">
-        <ul class="list-group" id="lista-detalle-quincena"></ul>
-      </div>
-    </div>
-  </div>
-</div>
+</main>
 
 <nav class="fixed-bottom bg-white border-top border-dark d-flex justify-content-around align-items-center py-2 shadow-lg z-3">
     <button class="btn btn-link text-dark text-decoration-none d-flex flex-column align-items-center w-100" onclick="cambiarVista('vista-asignacion')">
         <i class="bi bi-person-vcard fs-3"></i>
-        <span class="small fw-bold">Asignación</span>
+        <span class="small fw-bold" style="font-size: 0.65rem;">Asignación</span>
     </button>
+    
     <button class="btn btn-link text-dark text-decoration-none d-flex flex-column align-items-center border-start border-end border-dark w-100" onclick="cambiarVista('vista-usuarios')">
         <i class="bi bi-tools fs-3"></i>
-        <span class="small fw-bold">Usuarios</span>
+        <span class="small fw-bold" style="font-size: 0.65rem;">Usuarios</span>
     </button>
+    
     <button class="btn btn-link text-dark text-decoration-none d-flex flex-column align-items-center w-100" onclick="cambiarVista('vista-monitoreo')">
         <i class="bi bi-search fs-3"></i>
-        <span class="small fw-bold">Monitoreo</span>
+        <span class="small fw-bold" style="font-size: 0.65rem;">Monitoreo</span>
     </button>
 </nav>
 

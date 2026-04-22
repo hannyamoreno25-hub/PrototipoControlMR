@@ -1,0 +1,14 @@
+body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+.header-dark { background-color: #1c1c1c; border-bottom: 1px solid #000; }
+.logo-mr { height: 40px; border-radius: 4px; }
+.btn-usuario { background-color: transparent !important; color: #fff !important; border: none !important; }
+.card { border-radius: 10px; border: 2px solid #000; }
+.form-control, .form-select { border: 1px solid #000; }
+.sucursal-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; }
+.btn-eliminar-sucursal { color: red; font-weight: bold; background: none; border: none; font-size: 1.2rem; }
+.fixed-bottom { border-top: 1px solid #000; background-color: #fff; }
+.fixed-bottom button { border: none !important; background: none; transition: 0.3s; padding: 5px; }
+.fixed-bottom button:hover { background-color: #f1f1f1; }
+#lista-detalle-quincena .list-group-item { border-left: 5px solid #000; margin-bottom: 5px; }
+.modal-content { border-radius: 15px; }
+.table-dark { background-color: #1c1c1c !important; }

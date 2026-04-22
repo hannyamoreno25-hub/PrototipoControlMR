@@ -1,0 +1,109 @@
+/* =========================================
+   ESTILOS GENERALES
+========================================= */
+body {
+    /* Un fondo gris muy claro para que la tarjeta blanca resalte */
+    background-color: #f4f6f9; 
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+}
+
+/* =========================================
+   HEADER / TOPBAR
+========================================= */
+.topbar {
+    background-color: #1a222b; /* Azul/Gris muy oscuro, da aspecto de software de control */
+    color: #ffffff;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    position: sticky; /* Mantiene el menú arriba al hacer scroll */
+    top: 0;
+    z-index: 1000;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-logo {
+    height: 45px; /* Mantiene el logo en un tamaño controlable */
+    width: auto;
+    border-radius: 4px;
+    object-fit: contain;
+    background-color: #ffffff; /* Fondo blanco por si tu imagen es PNG o muy oscura */
+    padding: 3px;
+}
+
+.title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #e2e8f0;
+}
+
+/* =========================================
+   CONTENIDO PRINCIPAL Y TARJETAS
+========================================= */
+.content {
+    max-width: 1100px; /* Limita el ancho para que no se vea estirado en pantallas gigantes */
+}
+
+.card-section.formal-style {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 35px 30px;
+    /* Sombra suave para dar efecto de elevación (profundidad) */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+}
+
+.section-title-formal {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #dee2e6; /* Línea separadora elegante */
+    letter-spacing: 0.5px;
+}
+
+/* =========================================
+   BADGES (Etiquetas de Laborado/No Laborado)
+========================================= */
+.badge {
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+}
+
+/* =========================================
+   ANIMACIÓN DEL SPINNER Y CARGA
+========================================= */
+#employeeListContainer .text-center p {
+    color: #6c757d;
+    letter-spacing: 0.5px;
+}
+
+/* =========================================
+   ESTILOS PARA LAS TARJETAS GENERADAS POR JS 
+   (Úsalos cuando inyectes los datos de asistencia)
+========================================= */
+.employee-record {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 15px 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efecto hover: la tarjeta se levanta un poco al pasar el mouse */
+.employee-record:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+    border-color: #ced4da;
+}

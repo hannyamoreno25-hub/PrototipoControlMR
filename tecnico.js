@@ -1,34 +1,40 @@
 // === VARIABLES GLOBALES ===
 let streamActual = null;
 let datosVisitaPendiente = null;
+let camaraFrontal = false; // Controla cámara frontal/trasera
 
-const URL_SCRIPT_GOOGLE = "https://script.google.com/macros/s/AKfycbxbUJfgyR6iLUWiR5llY2BHPmWigzIpK2qeKE1TmxQLXEyhYxQCBjScQKrOPgrr9UI0JA/exec";
+const URL_SCRIPT_GOOGLE = "https://script.google.com/macros/s/AKfycbx7p2LC5pFT2hxypVlmLAXTb190jZ9JvjM2eQpZgYkdo8fAE97fKQEfFPD4RLS1CiLJbA/exec";
 
 // === 1. NAVEGACIÓN Y PESTAÑAS ===
 function cambiarPestana(idPestana, botonPresionado) {
     const pestanas = document.querySelectorAll('.tab-content');
-    pestanas.forEach(pestana => pestana.classList.remove('active'));
-    document.getElementById(idPestana).classList.add('active');
+    pestanas.forEach(pestana => {
+        pestana.classList.remove('active');
+        pestana.style.display = 'none';
+    });
+    const pestanaActiva = document.getElementById(idPestana);
+    pestanaActiva.classList.add('active');
+    pestanaActiva.style.display = 'block';
 
-    const botones = document.querySelectorAll('.nav-btn');
+    const botones = document.querySelectorAll('.bottom-nav button');
     botones.forEach(btn => {
-        btn.classList.remove('active-btn');
+        btn.classList.remove('text-primary');
         const icono = btn.querySelector('i');
-        if(icono.classList.contains('bi-play-circle-fill')) icono.className = 'bi bi-play-circle';
-        if(icono.classList.contains('bi-stop-circle-fill')) icono.className = 'bi bi-stop-circle';
-        if(icono.classList.contains('bi-calendar-check-fill')) icono.className = 'bi bi-calendar-check';
+        if(icono.classList.contains('bi-play-circle-fill')) icono.className = 'bi bi-play-circle fs-4';
+        if(icono.classList.contains('bi-stop-circle-fill')) icono.className = 'bi bi-stop-circle fs-4';
+        if(icono.classList.contains('bi-moon-stars-fill')) icono.className = 'bi bi-moon-stars fs-4';
     });
 
-    botonPresionado.classList.add('active-btn');
+    botonPresionado.classList.add('text-primary');
     const iconoActivo = botonPresionado.querySelector('i');
-    if(iconoActivo.classList.contains('bi-play-circle')) iconoActivo.className = 'bi bi-play-circle-fill';
-    if(iconoActivo.classList.contains('bi-stop-circle')) iconoActivo.className = 'bi bi-stop-circle-fill';
-    if(iconoActivo.classList.contains('bi-calendar-check')) iconoActivo.className = 'bi bi-calendar-check-fill';
+    if(iconoActivo.classList.contains('bi-play-circle')) iconoActivo.className = 'bi bi-play-circle-fill fs-4';
+    if(iconoActivo.classList.contains('bi-stop-circle')) iconoActivo.className = 'bi bi-stop-circle-fill fs-4';
+    if(iconoActivo.classList.contains('bi-moon-stars')) iconoActivo.className = 'bi bi-moon-stars-fill fs-4';
 
     gestionarCamaras(idPestana);
 }
 
-// === 2. CONTROL DE CÁMARAS ===
+// === 2. CONTROL DE CÁMARAS (CON GIRO) ===
 function gestionarCamaras(idPestana) {
     detenerCamara();
     if (idPestana === 'pantalla-iniciar') iniciarCamara('videoInicio', 'fotoInicio');
@@ -37,6 +43,7 @@ function gestionarCamaras(idPestana) {
 }
 
 function iniciarCamara(idVideo, idFoto) {
+    detenerCamara();
     const video = document.getElementById(idVideo);
     const foto = document.getElementById(idFoto);
     if (!video) return;
@@ -44,13 +51,15 @@ function iniciarCamara(idVideo, idFoto) {
     if(foto) foto.style.display = 'none';
     video.style.display = 'block';
 
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    const modo = camaraFrontal ? 'user' : 'environment'; 
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: modo } })
         .then(stream => {
             streamActual = stream;
             video.srcObject = stream;
         })
         .catch(err => {
-            console.error("Error al acceder a la cámara: ", err);
+            console.error("Error cámara: ", err);
             alert("No se pudo acceder a la cámara. Revisa los permisos.");
         });
 }
@@ -62,7 +71,12 @@ function detenerCamara() {
     }
 }
 
-// === 3. CAPTURA DE JORNADA (INICIO Y FIN) ===
+function toggleCamara(idVideo, idFoto) {
+    camaraFrontal = !camaraFrontal; 
+    iniciarCamara(idVideo, idFoto); 
+}
+
+// === 3. CAPTURA DE JORNADA Y LÓGICA DE RETARDOS ===
 function capturarDatos(tipoBoton) {
     const video = document.getElementById('video' + tipoBoton);
     const canvas = document.getElementById('canvas' + tipoBoton);
@@ -91,7 +105,7 @@ function capturarDatos(tipoBoton) {
 
     if (navigator.geolocation) {
         if(status) {
-            status.textContent = "Obteniendo GPS y enviando...";
+            status.textContent = "Obteniendo GPS y calculando asistencia...";
             status.className = "badge bg-warning text-dark";
         }
         
@@ -99,8 +113,8 @@ function capturarDatos(tipoBoton) {
             (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-                // === ENLACE CORREGIDO PARA QUE FUNCIONE PERFECTO ===
-                const enlaceReal = `https://www.google.com/maps?q=${lat},${lon}`;
+                // Enlace corregido para que abra perfecto en Google Maps
+                const enlaceReal = `https://maps.google.com/?q=${lat},${lon}`;
                 
                 if(document.getElementById('ubicacion' + tipoBoton)) {
                     document.getElementById('ubicacion' + tipoBoton).innerHTML = `<a href="${enlaceReal}" target="_blank">📍 Ver Mapa</a>`;
@@ -120,6 +134,29 @@ function capturarDatos(tipoBoton) {
 
 function enviarA_TuScript(tipoBoton, fecha, hora, ubicacionMapa, fotoBase64, statusElement) {
     const nombreUsuario = document.getElementById('userNameDisplay').textContent;
+    let estadoAsistencia = "N/A";
+
+    if (tipoBoton === 'Inicio') {
+        const checkNocturno = document.getElementById('esNocturnaInicio');
+        if (checkNocturno && checkNocturno.checked) {
+            estadoAsistencia = "Jornada Nocturna (Justificado)";
+        } else {
+            let partesHora = hora.split(":");
+            let horasLlegada = parseInt(partesHora[0], 10);
+            let minutosLlegada = parseInt(partesHora[1], 10);
+            let minutosTotales = (horasLlegada * 60) + minutosLlegada;
+            
+            // 9:16 AM = 556 min | 10:00 AM = 600 min
+            if (minutosTotales <= 556) {
+                estadoAsistencia = "A Tiempo"; 
+            } else if (minutosTotales > 556 && minutosTotales < 600) {
+                estadoAsistencia = "Retardo";  
+            } else {
+                estadoAsistencia = "Falta";    
+            }
+        }
+    }
+
     let payload = {
         action: "registrar_actividad",
         fecha: fecha,
@@ -129,11 +166,12 @@ function enviarA_TuScript(tipoBoton, fecha, hora, ubicacionMapa, fotoBase64, sta
 
     if (tipoBoton === 'Inicio') {
         payload.tipo = "Inicio de Jornada";
-        payload.horaInicio = hora;
+        payload.horaInicio = hora;       
         payload.ubicacionInicio = ubicacionMapa;
+        payload.asistencia = estadoAsistencia; // Se manda la etiqueta al Sheet
     } else if (tipoBoton === 'Fin') {
         payload.tipo = "Fin de Jornada";
-        payload.horaFin = hora;
+        payload.horaFin = hora;          
         payload.ubicacionFin = ubicacionMapa;
         payload.tiempo = "N/A"; 
     } 
@@ -146,7 +184,11 @@ function enviarA_TuScript(tipoBoton, fecha, hora, ubicacionMapa, fotoBase64, sta
     })
     .then(() => {
         if(statusElement) {
-            statusElement.textContent = "¡Registro Exitoso!";
+            if (tipoBoton === 'Inicio') {
+                statusElement.textContent = `¡Enviado! Estatus: ${estadoAsistencia}`;
+            } else {
+                statusElement.textContent = "¡Registro Exitoso!";
+            }
             statusElement.className = "badge bg-success";
         }
     })
@@ -161,7 +203,7 @@ function enviarA_TuScript(tipoBoton, fecha, hora, ubicacionMapa, fotoBase64, sta
 function iniciarJornada() { capturarDatos('Inicio'); }
 function finalizarJornada() { capturarDatos('Fin'); }
 
-// === 4. VISITA: ENTRADA Y SALIDA CON CRONÓMETRO ===
+// === 4. VISITA: ENTRADA Y SALIDA ===
 function iniciarVisita() {
     const sucursal = document.getElementById('sucursalSelect').value;
     if(!sucursal) { alert("Por favor selecciona una sucursal primero."); return; }
@@ -172,7 +214,6 @@ function iniciarVisita() {
     
     let fotoBase64Limpia = "";
 
-    // 1. Tomar Foto de Entrada
     if (video && video.srcObject) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -190,22 +231,19 @@ function iniciarVisita() {
     document.getElementById('horaVisitaInicio').textContent = horaEntrada;
 
     if (navigator.geolocation) {
-        status.textContent = "Obteniendo GPS de Entrada...";
+        status.textContent = "Obteniendo GPS...";
         status.className = "badge bg-warning text-dark";
         
         navigator.geolocation.getCurrentPosition((position) => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            
-            // === ENLACE CORREGIDO ===
-            const enlaceReal = `https://www.google.com/maps?q=${lat},${lon}`;
+            const enlaceReal = `https://maps.google.com/?q=${lat},${lon}`;
             document.getElementById('ubicacionVisita').innerHTML = `<a href="${enlaceReal}" target="_blank">📍 Mapa Entrada</a>`;
             
-            // === MEMORIA PARA ENVIAR TODO AL FINAL Y CALCULAR TIEMPO ===
             datosVisitaPendiente = {
                 fecha: fechaActual,
                 horaInicio: horaEntrada,
-                timestampInicio: Date.now(), // <-- Esto nos permite calcular el tiempo trabajado
+                timestampInicio: Date.now(),
                 fotoB64: fotoBase64Limpia,
                 sucursal: sucursal,
                 ubicacionInicio: enlaceReal
@@ -232,7 +270,6 @@ function finalizarVisita() {
     const nombreUsuario = document.getElementById('userNameDisplay').textContent;
     let fotoFinB64Limpia = "";
 
-    // 1. Tomar Foto de Salida
     if (video && video.srcObject) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -245,33 +282,28 @@ function finalizarVisita() {
     const horaSalida = ahora.toLocaleTimeString('es-MX', { hour12: false });
     document.getElementById('horaVisitaFin').textContent = horaSalida;
     
-    // === 2. CÁLCULO EXACTO DEL TIEMPO LABORADO ===
     const timestampFin = Date.now();
     const diffMs = timestampFin - datosVisitaPendiente.timestampInicio;
-    
     const diffSegundos = Math.floor(diffMs / 1000) % 60;
     const diffMinutos = Math.floor(diffMs / (1000 * 60)) % 60;
     const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
     
-    // Formato bonito HH:MM:SS
     const tiempoCalculado = 
         String(diffHoras).padStart(2, '0') + ":" + 
         String(diffMinutos).padStart(2, '0') + ":" + 
         String(diffSegundos).padStart(2, '0');
     
     if (navigator.geolocation) {
-        status.textContent = "Obteniendo GPS de Salida...";
+        status.textContent = "Procesando Salida...";
         status.className = "badge bg-warning text-dark";
 
         navigator.geolocation.getCurrentPosition((position) => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            
-            // === ENLACE CORREGIDO SALIDA ===
-            const enlaceReal = `https://www.google.com/maps?q=${lat},${lon}`;
+            const enlaceReal = `https://maps.google.com/?q=${lat},${lon}`;
             
             document.getElementById('ubicacionVisita').innerHTML += ` | <a href="${enlaceReal}" target="_blank">📍 Mapa Salida</a>`;
-            status.textContent = "Enviando Visita a Google Sheets...";
+            status.textContent = "Enviando a Google Sheets...";
 
             let payload = {
                 action: "registrar_actividad",
@@ -285,7 +317,7 @@ function finalizarVisita() {
                 horaFin: horaSalida,
                 ubicacionFin: enlaceReal,
                 fotoFinB64: fotoFinB64Limpia,
-                tiempo: tiempoCalculado // ¡AHORA SÍ MANDA EL CRONÓMETRO!
+                tiempo: tiempoCalculado
             };
 
             fetch(URL_SCRIPT_GOOGLE, {
@@ -295,11 +327,13 @@ function finalizarVisita() {
                 body: JSON.stringify(payload)
             })
             .then(() => {
-                status.textContent = "¡Visita Registrada Completa!";
+                status.textContent = `¡Visita Completa! Tiempo: ${tiempoCalculado}`;
                 status.className = "badge bg-success";
                 document.getElementById('btnIniVisita').disabled = false;
                 document.getElementById('btnFinVisita').disabled = true;
                 datosVisitaPendiente = null; 
+                
+                iniciarCamara('videoVisita', 'fotoVisita');
             })
             .catch(error => {
                 status.textContent = "Error al enviar";
@@ -312,7 +346,7 @@ function finalizarVisita() {
     }
 }
 
-// === 5. PROGRAMAR VISITA A SUCURSAL ===
+// === 5. PROGRAMAR JORNADA NOCTURNA ===
 function guardarProgramacion() {
     const sucursal = document.getElementById('sucursalProgramar').value;
     const fecha = document.getElementById('fechaProgramar').value;
@@ -321,7 +355,7 @@ function guardarProgramacion() {
     const btn = document.getElementById('btnGuardarPrograma');
 
     if(!sucursal || !fecha || !hora) {
-        alert("Por favor completa todos los campos (Sucursal, Fecha y Hora).");
+        alert("Por favor completa todos los campos.");
         return;
     }
 
@@ -334,7 +368,8 @@ function guardarProgramacion() {
         trabajador: nombreUsuario,
         sucursal: sucursal,
         fecha: fecha,
-        hora: hora
+        hora: hora,
+        nocturna: "SÍ" // Envia "SÍ" automático porque es la pestaña exclusiva
     };
 
     fetch(URL_SCRIPT_GOOGLE, {
@@ -344,17 +379,17 @@ function guardarProgramacion() {
         body: JSON.stringify(payload)
     })
     .then(() => {
-        alert("¡Visita programada con éxito!");
+        alert("¡Turno nocturno programado con éxito!");
         btn.disabled = false;
-        btn.textContent = "GUARDAR PROGRAMACIÓN";
+        btn.textContent = "GUARDAR TURNO NOCTURNO";
         document.getElementById('sucursalProgramar').value = "";
         document.getElementById('fechaProgramar').value = "";
         document.getElementById('horaProgramar').value = "";
     })
     .catch(error => {
-        alert("Hubo un error al programar la visita.");
+        alert("Hubo un error al programar.");
         btn.disabled = false;
-        btn.textContent = "GUARDAR PROGRAMACIÓN";
+        btn.textContent = "GUARDAR TURNO NOCTURNO";
     });
 }
 
@@ -376,9 +411,13 @@ function borrarDatos(tipoPantalla) {
         status.className = "badge bg-secondary";
     }
     iniciarCamara('video' + tipo, 'foto' + tipo);
+    
+    if (tipoPantalla === 'inicio' && document.getElementById('esNocturnaInicio')) {
+        document.getElementById('esNocturnaInicio').checked = false;
+    }
 }
 
-// === 6. CARGAR SUCURSALES EN LAS DOS LISTAS ===
+// === 6. CARGAR SUCURSALES ===
 async function cargarMisSucursales(nombreGuardado) {
     const selectVisita = document.getElementById('sucursalSelect');
     const selectProgramar = document.getElementById('sucursalProgramar');
@@ -427,6 +466,8 @@ async function cargarMisSucursales(nombreGuardado) {
 
 // === 7. INICIALIZACIÓN ===
 document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById('pantalla-iniciar').style.display = 'block';
+    
     iniciarCamara('videoInicio', 'fotoInicio');
     const nombreGuardado = sessionStorage.getItem("usuarioActivo") || localStorage.getItem("usuario_nombre");
     if (nombreGuardado) {
