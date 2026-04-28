@@ -59,7 +59,7 @@ function detenerCamara() {
 }
 
 // === 3. CAPTURA Y ENVÍO A GOOGLE SHEETS ===
-const URL_SCRIPT_GOOGLE = "https://script.google.com/macros/s/AKfycbxbUJfgyR6iLUWiR5llY2BHPmWigzIpK2qeKE1TmxQLXEyhYxQCBjScQKrOPgrr9UI0JA/exec";
+const URL_SCRIPT_GOOGLE = "https://script.google.com/macros/s/AKfycbxsV0HfspzGEe5ibnQiYKFTvPyc7lVXDq8zJyMbGFrHKkxULqzyFpj3D1JXz2Twdz2Yrw/exec";
 
 // Función original (Solo se usará para Inicio y Fin de Jornada)
 function capturarDatos(tipoBoton) {
