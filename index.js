@@ -1,5 +1,5 @@
 // 1. Configuración global
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxsV0HfspzGEe5ibnQiYKFTvPyc7lVXDq8zJyMbGFrHKkxULqzyFpj3D1JXz2Twdz2Yrw/exec";
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyWGdT5Zl_anPvjP-G28nw7wMS7g645vKAXaz4SSN3IJ1U_A_Tbb6HT25gBp-JL7Bwn0A/exec";
 
 async function login(event) {
     event.preventDefault(); // Evita que la página se recargue

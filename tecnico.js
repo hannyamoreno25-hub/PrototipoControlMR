@@ -3,7 +3,7 @@ let streamActual = null;
 let datosVisitaPendiente = null;
 let camaraFrontal = false; // Controla cámara frontal/trasera
 
-const URL_SCRIPT_GOOGLE = "https://script.google.com/macros/s/AKfycbxsV0HfspzGEe5ibnQiYKFTvPyc7lVXDq8zJyMbGFrHKkxULqzyFpj3D1JXz2Twdz2Yrw/exec";
+const URL_SCRIPT_GOOGLE = "https://script.google.com/macros/s/AKfycbyWGdT5Zl_anPvjP-G28nw7wMS7g645vKAXaz4SSN3IJ1U_A_Tbb6HT25gBp-JL7Bwn0A/exec";
 
 // === 1. NAVEGACIÓN Y PESTAÑAS ===
 function cambiarPestana(idPestana, botonPresionado) {
